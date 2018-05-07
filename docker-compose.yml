@@ -1,0 +1,36 @@
+version: "3"
+services:
+
+  pound:
+    image: pound:alpine
+    volumes:
+     - ~/docker-root/config/pound.cfg:/etc/pound/pound.cfg:ro
+     - ~/certs:/etc/pound/certs:ro
+    ports:
+     - "443:443"
+
+  web:
+    image: nginx:alpine
+    volumes:
+     - ~/docker-root/config/nginx.conf:/etc/nginx/nginx.conf:ro
+     - ~/docker-root/config/nginx:/etc/nginx/conf.d:ro
+     - ~/html:/var/www/html
+     - ~/php:/var/www/php
+     - ~/wordpress:/var/www/wp
+#    ports:
+#     - "80:80"
+
+  php-fpm:
+    image: php71-fpm:alpine
+#    image: php:7.1-fpm-alpine
+    volumes:
+     - ~/php:/var/www/php
+     - ~/wordpress:/var/www/wp
+     - ~/docker-root/config/php-fpm.conf:/etc/php7/php-fpm.conf:ro
+     - ~/docker-root/config/php-fpm:/etc/php7/php-fpm.d:ro
+
+  mariadb:
+    image: mariadb:alpine
+    volumes:
+     - ~/mysql:/var/lib/mysql
+
